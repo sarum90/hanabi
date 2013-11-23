@@ -1,0 +1,14 @@
+{
+    "name": "hanabi",
+    "description": "hanabi using express webSockets protojs",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+      "express": "3.x",
+      "pson": "1.x",
+      "coffee": "x",
+      "node.extend": "1.x",
+      "nodeunit": "0.8.x"
+    }
+}
+
