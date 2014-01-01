@@ -6,9 +6,14 @@
     "dependencies": {
       "express": "3.x",
       "pson": "1.x",
+      "bytebuffer": "*",
       "coffee": "x",
+      "coffee-middleware": "0.2.x",
       "node.extend": "1.x",
-      "nodeunit": "0.8.x"
+      "nodeunit": "0.8.x",
+      "jade": "*",
+      "stylus": "*",
+      "ws": "*"
     }
 }
 

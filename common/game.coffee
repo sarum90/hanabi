@@ -16,6 +16,7 @@ extend =  require "node.extend"
 
   class DiscardMove extends Move
     constructor: (game, @discard) ->
+      @discard = 1*@discard
       super(game, "discard")
 
     isLegal: ->
@@ -25,6 +26,7 @@ extend =  require "node.extend"
     apply: () ->
       if @isLegal()
         @game.discard.push(@discard)
+        @game.lastplay = @discard
         handarr = @game.hands[@game.turn()]
         handarr.splice(handarr.indexOf(@discard), 1)
         @game.deal()
@@ -33,6 +35,7 @@ extend =  require "node.extend"
 
   class PlayMove extends Move
     constructor: (game, @play) ->
+      @play = 1*@play
       super(game, "play")
 
     isLegal: ->
@@ -45,13 +48,16 @@ extend =  require "node.extend"
         playarr = @game.plays[card.color]
         if card.number == 1 && playarr.length == 0
           playarr.push(@play)
-        else if playarr.length > 0 && playarr[playarr.length-1].number = card.number-1
+        else if playarr.length > 0 && @game.cards[playarr[playarr.length-1]].number*1 == (card.number*1-1)
           playarr.push(@play)
         else
           @game.bombs++
           @game.discard.push(@play)
         handarr = @game.hands[@game.turn()]
         handarr.splice(handarr.indexOf(@play), 1)
+        @game.lastplay = @play
+        if card.number == 5 and @game.hints < 8
+            @game.hints++
         @game.deal()
 
   class HintMove extends Move
@@ -59,9 +65,11 @@ extend =  require "node.extend"
       super(game, "hint")
       @cards = []
       hand = @game.hands[@target]
+      console.log(@hint)
       for c in hand
         card = @game.cards[c]
-        if card.color == @hint || card.number == @hint
+        console.log(card)
+        if 1*card.number == 1*@hint || ""+card.color == ""+@hint
           @cards.push(c)
 
     isLegal: ->
@@ -70,22 +78,23 @@ extend =  require "node.extend"
     apply: () ->
       if @isLegal()
         @game.hints--
+        @game.lastplay=-1
+        @game.waitForAck =
+          target: @target,
+          cards : @cards,
+          hint  : @hint
+          
 
   class Card
     constructor: (@color, @number) ->
       @known = @color?
-
-    set: (color, number) ->
-      if !@known
-        @color = color
-        @number = number
-        @known = true
 
     toString: () ->
       if @known then @color + "-" + @number else "unknown"
 
   class Game
     constructor: (@players) ->
+      @lastplay = -1
       indexToCard = (index) ->
         inmod10 = index % 10
         cardnum = Math.floor((inmod10+1)/2)
@@ -97,6 +106,7 @@ extend =  require "node.extend"
       @discard=[]
       @bombs=0
       @gameover=false
+      @waitForAck= undefined
       @score=0
       @turnsleft=-1
       cards = [0...tot_cards]
@@ -119,14 +129,11 @@ extend =  require "node.extend"
     turn: () -> @moves % @players
 
     deal: () ->
-      if(@deck.length > 0)
+      if @deck.length > 0
         @hands[@turn()].push(@deck.splice(0,1)[0])
-      else
+      if @deck.length == 0
         if @turnsleft == -1
           @turnsleft = @players+1
-
-    set: (index, color, number) ->
-      @cards[index].set(color, number)
 
     cardsToString : (cards) ->
       (@cards[c].toString() for c in cards).join("\n")
@@ -145,18 +152,27 @@ extend =  require "node.extend"
       not (index in @hands[player] or index in @deck)
 
     cloneFor: (player) ->
+      if player < 0 || player > @players
+        return null
       ret = extend(true,{},this)
       for i in [0...tot_cards]
         if !@isVisable(i, player)
           ret.cards[i] = new Card()
       ret
 
+    ack: ->
+      @waitForAck = undefined
+
     doMove: (move) ->
       if @gameover
+        return false
+      if @waitForAck?
         return false
       if !move.isLegal()
         return false
       move.apply()
+      console.log(@lastplay)
+      @moves++
       if @bombs == 3
         @gameover = true
         return true

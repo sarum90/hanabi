@@ -1,5 +1,13 @@
 
+default: rem-run
+
 test:
 	nodeunit test/gameTest.coffee
 
-.PHONY: test
+run:
+	coffee server.coffee
+
+rem-run:
+	tmux send-keys -t 2 C-c "coffee server.coffee" C-m
+
+.PHONY: test default run rem-run
