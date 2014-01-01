@@ -1,0 +1,62 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+a {
+  color: #ffb700;
+}
+.card {
+  width: 50px;
+  height: 50px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #000;
+  text-align: center;
+  vertical-align: middle;
+  display: table-cell;
+  font-size: 30px;
+  margin: 2px;
+  float: left;
+}
+.selected {
+  border-style: solid;
+  border-width: 3px;
+}
+.lastplay {
+  border-style: solid;
+  border-width: 3px;
+}
+.selectedhand {
+  border-style: solid;
+  border-width: 3px;
+}
+.lookHere {
+  border-width: 5px;
+}
+.yellow-card {
+  background-color: #ff0;
+}
+.red-card {
+  background-color: #a00;
+}
+.blue-card {
+  background-color: #55c;
+}
+.green-card {
+  background-color: #080;
+}
+.white-card {
+  background-color: #fff;
+}
+.undefined-card {
+  background-color: #888;
+}
+.container {
+  overflow: hidden;
+}
+.handcontainer {
+  overflow: hidden;
+}
+.cardid {
+  font-size: 10px;
+}
