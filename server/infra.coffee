@@ -3,7 +3,9 @@ hanabi = require('../common/game')
 
 games = {}
 
+
 this.getGame = (name, players) ->
+  console.log name+":"+players
   if players < 2 || players > 5
     return null
   key = "#{players}-#{name}"

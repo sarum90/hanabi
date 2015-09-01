@@ -63,6 +63,8 @@ class WaitForGame
   constructor: (@cxn) ->
 
   got: (message) ->
+    console.log "got a message"
+    console.log this
     if not message?
       @cxn.send("No message?")
       return
@@ -123,15 +125,17 @@ class Connection
       ver: @ver
 
   send: (message) ->
-    enc = @pson.encode(message)
-    enc.flip()
+    #enc = @pson.encode(message)
+    #enc.flip()
     if @ws.readyState == ws.OPEN
-      @ws.send(enc.toBase64())
+      #@ws.send(enc.toBase64())
+      @ws.send(JSON.stringify(message))
 
   got: (message) ->
-    bb = bb_lib.decode64(message.data)
-    decoded = @pson.decode(bb)
-    @state.got(decoded)
+    #bb = bb_lib.fromBase64(message.data)
+    #decoded = @pson.decode(bb)
+    #@state.got(decoded)
+    @state.got(JSON.parse(message.data))
 
 connections = {}
 

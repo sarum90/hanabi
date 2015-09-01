@@ -150,10 +150,7 @@ drawGame = (container, game, playerid) ->
             card: num
   if game.lastplay? && game.lastplay >= 0
     hl = game.lastplay
-    console.log(hl)
-    console.log(".card[num=#{hl}]")
     $(".card[num=#{hl}]").addClass("lastplay")
-    console.log("HERE")
 
 
 ws = {}
@@ -167,9 +164,11 @@ setGame = (g, v, pid) ->
     ver = v
 
 sendinfo = (info) ->
-  bb = pson.encode info
-  bb.flip()
-  ws.send(bb.toBase64())
+  console.log info
+  #bb = pson.encode info
+  #bb.flip()
+  #ws.send(bb.toBase64())
+  ws.send(JSON.stringify(info))
 
 $(document).ready( ->
   $(".midpane").append '
@@ -181,7 +180,7 @@ $(document).ready( ->
     </form>
       '
   $("#startform").submit( (event) ->
-    ws = new WebSocket("ws://162.243.130.247:3000/ws")
+    ws = new WebSocket("ws://162.243.130.247:3001/ws")
     ws.onopen = (event) ->
       sendinfo
               gamename: $("#startform > #name").val()
@@ -189,8 +188,9 @@ $(document).ready( ->
               from: 1*$("#startform > #num").val()-1
       ws.pid = 1*$("#startform > #num").val()-1
     ws.onmessage = (message) ->
-      data = dcodeIO.ByteBuffer.decode64(message.data)
-      val = pson.decode(data)
+      #data = dcodeIO.ByteBuffer.fromBase64(message.data)
+      #val = pson.decode(data)
+      val = JSON.parse(message.data)
       if val.type?
         if val.type == "game"
           g = new Game(val.game.players)

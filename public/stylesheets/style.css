@@ -40,7 +40,7 @@ a {
   background-color: #a00;
 }
 .blue-card {
-  background-color: #55c;
+  background-color: #33f;
 }
 .green-card {
   background-color: #080;
@@ -50,6 +50,9 @@ a {
 }
 .undefined-card {
   background-color: #888;
+}
+.rainbow-card {
+  background-image: url("/image/rainbow.png");
 }
 .container {
   overflow: hidden;
