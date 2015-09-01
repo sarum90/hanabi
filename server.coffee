@@ -11,9 +11,7 @@ http = require('http')
 cxns = require('./server/connections')
 
 
-
-
-app.set('port', 3000)
+app.set('port', 3001)
 app.set('views', __dirname + '/views')
 app.set('view engine', 'jade')
 app.use(express.favicon())
@@ -67,5 +65,5 @@ app.use(express.errorHandler())
 server = http.createServer (app)
 cxns.start(server)
 
-server.listen 3000
+server.listen 3001
 

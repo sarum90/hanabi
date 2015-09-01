@@ -2,11 +2,11 @@
 extend =  require "node.extend"
 
 ((global) ->
-  num_suites = 5
+  num_suites = 6
   num_cards = 5
   duplicates = 2
   tot_cards = num_suites*duplicates*num_cards
-  suites = ['red', 'yellow', 'green', 'blue', 'white']
+  suites = ['red', 'yellow', 'green', 'blue', 'white', 'rainbow']
 
   class Move
     constructor: (@game, @type) ->
@@ -65,15 +65,17 @@ extend =  require "node.extend"
       super(game, "hint")
       @cards = []
       hand = @game.hands[@target]
-      console.log(@hint)
       for c in hand
         card = @game.cards[c]
-        console.log(card)
         if 1*card.number == 1*@hint || ""+card.color == ""+@hint
           @cards.push(c)
+        if ""+card.color == "rainbow"
+          for s in suites
+            if ""+s == ""+@hint
+              @cards.push(c)
 
     isLegal: ->
-      return super() && @cards.length > 0 && @game.hints > 0 && @target != @game.turn()
+      return super() && @cards.length > 0 && @game.hints > 0 && @target != @game.turn() && ""+@hint != "rainbow"
 
     apply: () ->
       if @isLegal()
@@ -171,7 +173,6 @@ extend =  require "node.extend"
       if !move.isLegal()
         return false
       move.apply()
-      console.log(@lastplay)
       @moves++
       if @bombs == 3
         @gameover = true
